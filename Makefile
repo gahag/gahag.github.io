@@ -20,11 +20,11 @@ all: publish
 
 publish: publish.el
 	@echo "Publishing... with current Emacs configurations."
-	${EMACS} --batch --load publish.el --funcall org-publish-all
+	${EMACS} --script publish.el
 
 publish_no_init: publish.el
 	@echo "Publishing... with --no-init."
-	${EMACS} --batch --no-init --load publish.el --funcall org-publish-all
+	${EMACS} --no-init --script publish.el
 
 clean:
 	@echo "Cleaning up.."

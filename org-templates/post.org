@@ -1,3 +1,3 @@
-#+AUTHOR: John Doe
+#+AUTHOR: Gahag
 #+OPTIONS: toc:nil
 #+HTML_DOCTYPE: xhtml-strict
