@@ -10,6 +10,7 @@
 ;; Refer the Makefile for more info.
 
 ;;; Code:
+(package-initialize) ;; Required because we need to load htmlize.
 (require 'org)
 (require 'ox-publish)
 

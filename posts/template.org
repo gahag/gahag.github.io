@@ -8,7 +8,7 @@ can also use ~verbatim~ or =code=. Use +strikethrough+ if
 needed.[fn:org-manual][fn:publish]
 
 **** HTML snippet:
-     #+BEGIN_SRC html
+     #+BEGIN_SRC xml
        <html>
          <h1></h1>
        </html>
