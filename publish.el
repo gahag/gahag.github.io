@@ -85,8 +85,7 @@ PROJECT: `posts in this case."
         (t entry)))
 
 
-(setq org-publish-use-timestamps-flag nil
-      org-publish-timestamp-directory "~/.cache/org-publish/")
+(setq org-publish-timestamp-directory "~/.cache/org-publish/")
 
 (setq org-publish-project-alist
       `(("posts"
