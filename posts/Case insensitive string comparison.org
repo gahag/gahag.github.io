@@ -1,0 +1,81 @@
+#+title: Case insensitive string comparison is an easy problem, right?
+#+date: <2021-03-18 Thu>
+#+filetags: unicode string comparison locale languages
+#+setupfile: ../org-templates/post.org
+
+
+Let's say you want to compare strings in a case-insensitive manner:
+
+#+begin_src js
+  "yes" == "Yes"
+#+end_src
+
+Sounds easy, just use something like *toLowerCase* and it's done, right?
+
+Welcome to unicode.
+
+#+attr_html: :width 200px
+[[../images/posts/Case insensitive string comparison/unicode.png]]
+
+Let's talk about German. German has this rather peculiar letter called Eszett: *ß*. Eszett
+is a lowercase letter, and traditionally it did not have a capital form. In 2017, the
+Council for German Orthography ultimately adopted capital *ß*, *ẞ*, into German orthography,
+ending a long orthographic debate.[fn:1] As this convetion is still pretty recent, many
+implementations still uppercase *ß* as *SS*.
+
+But what all these quirks have to do with case insensitive string comparison? Let's see:
+
+#+begin_src js
+  'ß'.toLowerCase()  == 'ß'
+  'SS'.toLowerCase() == 'ss'
+  'ß'.toLowerCase()  != 'SS'.toLowerCase()
+#+end_src
+
+So, *toLowerCase* does not work for German. But, we still have *toUpperCase*, which should
+work, right?
+
+#+begin_src js
+  'ß'.toUpperCase()  == 'SS'
+  'SS'.toUpperCase() == 'SS'
+  'ß'.toUpperCase()  == 'SS'.toUpperCase()
+#+end_src
+
+Right, it seems like so. But is that all?
+
+Let's talk about Turkish. In English, we have a single letter *i*, which is capitalized as
+*I*. Turkish on the other hand, has two letters *i*, which are distinguished by dotting: *ı* is
+capitalized as *I*, and *i* is capitalized as *İ*. It's beautiful how the world has so many
+diverse languages.
+
+As you may have noticed, this is somewhat like the German *ß*, which excludes using
+*toLowerCase* as a valid solution. And it goes further by exluding *toUpperCase* too:
+
+#+begin_src js
+  'i'.toUpperCase() == 'I'
+  'İ'.toUpperCase() == 'İ'
+  'i'.toUpperCase() != 'İ'.toUpperCase()
+#+end_src
+
+So, it seems like converting between cases is no a robust solution.
+
+#+begin_quote
+In this case, it is all an aspect of living in a global world, that has had thousands of
+years of divergent cultures with different practices, and we are trying to squash all
+those into 8 bits and 2 lines of code. \\
+-- [[https://stackoverflow.com/questions/38406793/why-is-capitalizing-the-first-letter-of-a-string-so-convoluted-in-rust#comment64222148_38406793][Shepmaster]]
+#+end_quote
+
+Then how can we solve this problem after all? The short answer is: use a library that
+provides case insensitive string comparison.[fn:2] There are many intricate details to
+handle everything correctly, so it's best to trust the effort of specialists, as
+usual. Also, by using a decent library, you'll problaby get a performance improvement for
+free, as it will compare the strings in place and thus prevent additional memory
+allocation/copying.
+
+#+begin_quote
+The issue with problems that look easy, is that they often are not. \\
+-- Unknown author
+#+end_quote
+
+[fn:1] https://en.wikipedia.org/wiki/%C3%9F
+[fn:2] And no, regex libraries are usually not the appropriate tool to tackle this problem.
