@@ -1,0 +1,21 @@
+#+title: The Endless Journey
+#+date: <2021-04-04 Sun>
+#+filetags: poetry lyrics ludic
+#+setupfile: ../org-templates/post.org
+
+#+begin_verse
+In the beginning, we were
+In this very place, we met
+For each other, we fell
+In the moonlight, we kissed
+In this very bed, we laid
+Deep inside, we're still the same
+But otherwise, we've changed
+In the same ways, we walked
+In both our pasts, we stumbled
+In the soil, our faces
+To move on, we stood up
+In the very end, we stand
+There's no going back
+And no way is forward
+#+end_verse
