@@ -20,7 +20,7 @@ Welcome to unicode.
 Let's talk about German. German has this rather peculiar letter called Eszett: *ß*. Eszett
 is a lowercase letter, and traditionally it did not have a capital form. In 2017, the
 Council for German Orthography ultimately adopted capital *ß*, *ẞ*, into German orthography,
-ending a long orthographic debate.[fn:1] As this convetion is still pretty recent, many
+ending a long orthographic debate.[fn:1] As this convention is still pretty recent, many
 implementations still uppercase *ß* as *SS*.
 
 But what all these quirks have to do with case insensitive string comparison? Let's see:
@@ -48,7 +48,7 @@ capitalized as *I*, and *i* is capitalized as *İ*. It's beautiful how the world
 diverse languages.
 
 As you may have noticed, this is somewhat like the German *ß*, which excludes using
-*toLowerCase* as a valid solution. And it goes further by exluding *toUpperCase* too:
+*toLowerCase* as a valid solution. And it goes further by excluding *toUpperCase* too:
 
 #+begin_src js
   'i'.toUpperCase() == 'I'
@@ -56,7 +56,7 @@ As you may have noticed, this is somewhat like the German *ß*, which excludes u
   'i'.toUpperCase() != 'İ'.toUpperCase()
 #+end_src
 
-So, it seems like converting between cases is no a robust solution.
+So, it seems like converting between cases is not a robust solution.
 
 #+begin_quote
 In this case, it is all an aspect of living in a global world, that has had thousands of
@@ -68,7 +68,7 @@ those into 8 bits and 2 lines of code. \\
 Then how can we solve this problem after all? The short answer is: use a library that
 provides case insensitive string comparison.[fn:2] There are many intricate details to
 handle everything correctly, so it's best to trust the effort of specialists, as
-usual. Also, by using a decent library, you'll problaby get a performance improvement for
+usual. Also, by using a decent library, you'll probably get a performance improvement for
 free, as it will compare the strings in place and thus prevent additional memory
 allocation/copying.
 
