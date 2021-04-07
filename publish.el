@@ -14,6 +14,8 @@
 (require 'org)
 (require 'ox-publish)
 
+(setq-default make-backup-files nil)
+
 ;; setting to nil, avoids "Author: x" at the bottom
 (setq org-export-with-section-numbers nil
       org-export-with-smart-quotes t

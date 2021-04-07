@@ -3,8 +3,8 @@
 all: publish run
 
 publish: publish.el
-	@echo "Publishing... with current Emacs configurations."
-	emacs --script publish.el
+	@echo "Publishing..."
+	emacs -q --script publish.el
 
 run:
 	@echo "Running server..."
