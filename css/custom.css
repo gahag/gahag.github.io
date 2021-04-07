@@ -1,0 +1,30 @@
+body img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	border: none;
+}
+pre.src {
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+	border: none;
+	box-shadow: none;
+}
+pre.src, pre.example {
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+	border: none;
+	box-shadow: none;
+}
+body.pubdate {
+	border-bottom: none;
+	text-align:left;
+}
+figcaption {
+	text-align: center;
+}
+body a:hover {
+	color: #0C88C2;
+}

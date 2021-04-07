@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- Apr 07, 2021 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Case insensitive string comparison is an easy problem, right?</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Gahag" />
+<link rel='icon' type='image/png' href='/images/favicon.png'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='preconnect' href='https://fonts.gstatic.com'>
+<link href='https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap' rel='stylesheet'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+<div class='intro'>
+	<img src='/images/about/profile.png' alt='gahag' class='no-border'/>
+	<h1>
+		<span class="black">Gahag's Blog</span>
+	</h1>
+</div>
+
+<div class='nav'>
+	<ul>
+		<li><a href='/'>Home</a> -</li>
+		<li><a href='http://github.com/gahag'>Github</a> -</li>
+		<li><a href='/about/'>About</a></li>
+	</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Case insensitive string comparison is an easy problem, right?
+<br />
+<span class="subtitle">Published on Mar 18, 2021 by Gahag.</span>
+</h1>
+<p>
+Let&rsquo;s say you want to compare strings in a case-insensitive manner:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-string">"yes"</span> == <span class="org-string">"Yes"</span>
+</pre>
+</div>
+
+<p>
+Sounds easy, just use something like <b>toLowerCase</b> and it&rsquo;s done, right?
+</p>
+
+<p>
+Welcome to unicode.
+</p>
+
+
+<div class="figure">
+<p><img src="../images/posts/Case insensitive string comparison/unicode.png" alt="unicode.png" width="200px" />
+</p>
+</div>
+
+<p>
+Let&rsquo;s talk about German. German has this rather peculiar letter called Eszett: <b>ß</b>. Eszett
+is a lowercase letter, and traditionally it did not have a capital form. In 2017, the
+Council for German Orthography ultimately adopted capital <b>ß</b>, <b>ẞ</b>, into German orthography,
+ending a long orthographic debate.<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> As this convention is still pretty recent, many
+implementations still uppercase <b>ß</b> as <b>SS</b>.
+</p>
+
+<p>
+But what all these quirks have to do with case insensitive string comparison? Let&rsquo;s see:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-string">'&#223;'</span>.toLowerCase()  == <span class="org-string">'&#223;'</span>
+<span class="org-string">'SS'</span>.toLowerCase() == <span class="org-string">'ss'</span>
+<span class="org-string">'&#223;'</span>.toLowerCase()  != <span class="org-string">'SS'</span>.toLowerCase()
+</pre>
+</div>
+
+<p>
+So, <b>toLowerCase</b> does not work for German. But, we still have <b>toUpperCase</b>, which should
+work, right?
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-string">'&#223;'</span>.toUpperCase()  == <span class="org-string">'SS'</span>
+<span class="org-string">'SS'</span>.toUpperCase() == <span class="org-string">'SS'</span>
+<span class="org-string">'&#223;'</span>.toUpperCase()  == <span class="org-string">'SS'</span>.toUpperCase()
+</pre>
+</div>
+
+<p>
+Right, it seems like so. But is that all?
+</p>
+
+<p>
+Let&rsquo;s talk about Turkish. In English, we have a single letter <b>i</b>, which is capitalized as
+<b>I</b>. Turkish on the other hand, has two letters <b>i</b>, which are distinguished by dotting: <b>ı</b> is
+capitalized as <b>I</b>, and <b>i</b> is capitalized as <b>İ</b>. It&rsquo;s beautiful how the world has so many
+diverse languages.
+</p>
+
+<p>
+As you may have noticed, this is somewhat like the German <b>ß</b>, which excludes using
+<b>toLowerCase</b> as a valid solution. And it goes further by excluding <b>toUpperCase</b> too:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-string">'i'</span>.toUpperCase() == <span class="org-string">'I'</span>
+<span class="org-string">'&#304;'</span>.toUpperCase() == <span class="org-string">'&#304;'</span>
+<span class="org-string">'i'</span>.toUpperCase() != <span class="org-string">'&#304;'</span>.toUpperCase()
+</pre>
+</div>
+
+<p>
+So, it seems like converting between cases is not a robust solution.
+</p>
+
+<blockquote>
+<p>
+In this case, it is all an aspect of living in a global world, that has had thousands of
+years of divergent cultures with different practices, and we are trying to squash all
+those into 8 bits and 2 lines of code. <br />
+&#x2013; <a href="https://stackoverflow.com/questions/38406793/why-is-capitalizing-the-first-letter-of-a-string-so-convoluted-in-rust#comment64222148_38406793">Shepmaster</a>
+</p>
+</blockquote>
+
+<p>
+Then how can we solve this problem after all? The short answer is: use a library that
+provides case insensitive string comparison.<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup> There are many intricate details to
+handle everything correctly, so it&rsquo;s best to trust the effort of specialists, as
+usual. Also, by using a decent library, you&rsquo;ll probably get a performance improvement for
+free, as it will compare the strings in place and thus prevent additional memory
+allocation/copying.
+</p>
+
+<blockquote>
+<p>
+The issue with problems that look easy, is that they often are not. <br />
+&#x2013; Unknown author
+</p>
+</blockquote>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://en.wikipedia.org/wiki/%C3%9F">https://en.wikipedia.org/wiki/ß</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+And no, regex libraries are usually not the appropriate tool to tackle this problem.
+</p></div></div>
+
+
+</div>
+</div></main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Copyright © 2021 <a href='mailto:gabriel.s.b@live.com'>Gabriel Bastos</a>.<br>
+  Template by <a href='https://gitlab.com/psachin/psachin.gitlab.io/'>Sachin Patil</a> <br>
+  Last updated on Apr 07, 2021. Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.1.9).
+</div>
+</footer>
+</body>
+</html>
