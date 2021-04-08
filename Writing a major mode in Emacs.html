@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- Apr 08, 2021 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Writing a major mode in Emacs</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Gahag" />
+<link rel='icon' type='image/png' href='/images/favicon.png'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='preconnect' href='https://fonts.gstatic.com'>
+<link href='https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap' rel='stylesheet'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+<div class='intro'>
+	<img src='/images/about/profile.png' alt='gahag' class='no-border'/>
+	<h1>
+		<span class="black">Gahag's Blog</span>
+	</h1>
+</div>
+
+<div class='nav'>
+	<ul>
+		<li><a href='/'>Home</a> -</li>
+		<li><a href='http://github.com/gahag'>Github</a> -</li>
+		<li><a href='/about/'>About</a></li>
+	</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Writing a major mode in Emacs
+<br />
+<span class="subtitle">Published on Apr 07, 2021 by Gahag.</span>
+</h1>
+<p>
+Following my previous post on <a href="https://gahag.github.io/Custom%20syntax%20highlighter%20for%20LaTeX.html">how to create a custom syntax highlighter for LaTeX</a>, the
+necessity of editing Hush<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup> source files arose. But, as Hush is a brand new
+language, there are no editors that support it yet. Then, how can we implement support for
+Hush in a text editor? Let&rsquo;s reach for Emacs<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>, the extensible, customizable,
+free/libre text editor.
+</p>
+
+<p>
+Emacs has this thing called major modes<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>, which are the modules that
+implement support for viewing and editing different types of data, including source code
+text. Major modes, as other kinds of extensions, are programmed using Emacs Lisp. As I&rsquo;m
+not very familiar with Emacs Lisp, my first goal was to define basic syntax highlighting
+for Hush. I managed to do so using <code>define-generic-mode</code>, a built-in facility to implement a
+major mode:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">define-generic-mode</span> '<span class="org-function-name">hush-mode</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Comments:</span>
+  '(<span class="org-string">"#"</span>)
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Keywords:</span>
+  '(<span class="org-string">"let"</span> <span class="org-string">"if"</span> <span class="org-string">"then"</span> <span class="org-string">"else"</span> <span class="org-string">"end"</span> <span class="org-string">"for"</span> <span class="org-string">"in"</span> <span class="org-string">"do"</span> <span class="org-string">"while"</span>
+    <span class="org-string">"function"</span> <span class="org-string">"return"</span> <span class="org-string">"not"</span> <span class="org-string">"and"</span> <span class="org-string">"or"</span> <span class="org-string">"true"</span> <span class="org-string">"false"</span> <span class="org-string">"nil"</span> <span class="org-string">"break"</span> <span class="org-string">"self"</span>)
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Additional definitions:</span>
+  '()
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">File extension:</span>
+  '(<span class="org-string">"\\.hsh$"</span>)
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Additional setup:</span>
+  nil
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Descritption:</span>
+  <span class="org-doc">"A mode for hush scripts"</span>)
+</pre>
+</div>
+
+<p>
+This way, we can define comment syntax, keywords, and file extensions for our language. We
+also get string highlighting out of the box. But editing source code goes beyond just
+basic syntax highlighting. With <code>define-generic-mode</code>, we&rsquo;re lacking:
+</p>
+<ul class="org-ul">
+<li>Automatic indentation support.</li>
+<li>Interactive features, such as executing the current file.</li>
+<li>A custom keymap, which is a set of shortcuts specific to our mode.</li>
+<li>Hooks<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>, a feature in Emacs that allows one to attach custom functions to
+specific events, like saving the file.</li>
+</ul>
+
+<p>
+To provide proper support for such features, we must go beyond <code>define-generic-mode</code>. We&rsquo;ll
+reach for a more powerful construct, <code>define-derived-mode</code>, which allows us to build a major
+mode based on another major mode. In particular, one usually would want to derive from
+<code>prog-mode</code>, which is a generic mode for programming languages. As Hush is largely based on
+Lua<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>, we will derive from <code>lua-mode</code><sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup> instead, which will provide some
+features like automatic indentation out of the box.
+</p>
+
+<p>
+In order to override the aspects that differ between Lua and Hush, we must understand a
+few things first:
+</p>
+<ol class="org-ol">
+<li>Emacs&rsquo; font-lock is based on regexes<sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>, which we will use for keywords.</li>
+<li>Additionally, we can use syntax tables<sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup>, which contain definitions to
+syntactic constructs. We will use one to define comments and operators.</li>
+</ol>
+
+<p>
+By exploring these concepts, and using <code>lua-mode</code>&rsquo;s implementation as inspiration, we can
+finally implement <code>hush-mode</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">A list of keywords in Hush:</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">hush-keywords</span>
+  '(<span class="org-string">"let"</span> <span class="org-string">"if"</span> <span class="org-string">"then"</span> <span class="org-string">"else"</span> <span class="org-string">"end"</span> <span class="org-string">"for"</span> <span class="org-string">"in"</span> <span class="org-string">"do"</span> <span class="org-string">"while"</span> <span class="org-string">"function"</span>
+    <span class="org-string">"return"</span> <span class="org-string">"not"</span> <span class="org-string">"and"</span> <span class="org-string">"or"</span> <span class="org-string">"true"</span> <span class="org-string">"false"</span> <span class="org-string">"nil"</span> <span class="org-string">"break"</span> <span class="org-string">"self"</span>))
+
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">The syntax table for comments and operators:</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">hush-mode-syntax-table</span>
+  (<span class="org-keyword">with-syntax-table</span> (copy-syntax-table)
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">According to the modify-syntax-entry documentation, the string</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">parameter is a char code:</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">.  punctuation</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">"  string quote</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">&lt;  comment starter</span>
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">&gt;  comment ender</span>
+
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">comment syntax: begins with "#", ends with "\n"</span>
+    (modify-syntax-entry ?# <span class="org-string">"&lt;"</span>)
+    (modify-syntax-entry ?\n <span class="org-string">"&gt;"</span>)
+
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">main string syntax: bounded by ' or "</span>
+    (modify-syntax-entry ?\' <span class="org-string">"\""</span>)
+    (modify-syntax-entry ?\" <span class="org-string">"\""</span>)
+
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">single-character binary operators:</span>
+    (modify-syntax-entry ?+ <span class="org-string">"."</span>)
+    (modify-syntax-entry ?- <span class="org-string">"."</span>)
+    (modify-syntax-entry ?* <span class="org-string">"."</span>)
+    (modify-syntax-entry ?/ <span class="org-string">"."</span>)
+    (modify-syntax-entry ?% <span class="org-string">"."</span>)
+    (modify-syntax-entry ?&gt; <span class="org-string">"."</span>)
+    (modify-syntax-entry ?&lt; <span class="org-string">"."</span>)
+    (modify-syntax-entry ?= <span class="org-string">"."</span>)
+    (modify-syntax-entry ?! <span class="org-string">"."</span>)
+
+    (syntax-table))
+  <span class="org-doc">"`</span><span class="org-doc"><span class="org-constant">hush-mode</span></span><span class="org-doc">' syntax table."</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Setup the keywords regex from the keywords list:</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">hush-font-lock-keywords</span>
+  (concat <span class="org-string">"\\&lt;</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">(</span></span><span class="org-string">"</span> (regexp-opt hush-keywords) <span class="org-string">"</span><span class="org-string"><span class="org-regexp-grouping-backslash">\\</span></span><span class="org-string"><span class="org-regexp-grouping-construct">)</span></span><span class="org-string">\\&gt;"</span> ))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Define the font-lock properties:</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">hush-font-lock</span>
+  `(
+    (,hush-font-lock-keywords . font-lock-keyword-face)
+    <span class="org-comment-delimiter">;; </span><span class="org-comment">Here, we can place additional definitions.</span>
+    ))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">A function to setup the font-lock properties:</span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">hush-font-lock-setup</span> ()
+  <span class="org-doc">"Set up Hush font lock."</span>
+  (<span class="org-keyword">setq-local</span> font-lock-defaults '((hush-font-lock) nil t)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Create a new mode map for Hush, where we can override shortcuts</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">from lua-mode:</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">hush-mode-map</span> (make-sparse-keymap)
+  <span class="org-doc">"The keymap for Hush scripts"</span>)
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Here, we can define shortcuts (This is just a dummy example)</span>
+(define-key hush-mode-map (kbd <span class="org-string">"C-c t"</span>) 'find-file)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Define our major mode, based on lua-mode:</span>
+(<span class="org-keyword">define-derived-mode</span> <span class="org-function-name">hush-mode</span> lua-mode <span class="org-string">"hush"</span> ()
+  <span class="org-builtin">:syntax-table</span> hush-mode-syntax-table
+  (<span class="org-keyword">setq-local</span> comment-use-syntax t
+              <span class="org-comment-delimiter">; </span><span class="org-comment">These will be used when inserting comments, but not</span>
+              <span class="org-comment-delimiter">; </span><span class="org-comment">for highlighting:</span>
+              comment-start <span class="org-string">"# "</span>
+              comment-start-skip <span class="org-string">"##*[ \t]*"</span>)
+  (hush-font-lock-setup))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Define the file extension for Hush scripts:</span>
+(add-to-list 'auto-mode-alist '(<span class="org-string">"\\.hsh\\'"</span> . hush-mode))
+</pre>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://github.com/gahag/hush">https://github.com/gahag/hush</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://www.gnu.org/software/emacs/">https://www.gnu.org/software/emacs/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Modes.html">https://www.gnu.org/software/emacs/manual/html_node/emacs/Modes.html</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Hooks.html">https://www.gnu.org/software/emacs/manual/html_node/emacs/Hooks.html</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">
+<a href="http://www.lua.org/">http://www.lua.org/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://immerrr.github.io/lua-mode/">https://immerrr.github.io/lua-mode/</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://en.wikipedia.org/wiki/Regular_expression">https://en.wikipedia.org/wiki/Regular_expression</a>
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-Basics.html">https://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-Basics.html</a>
+</p></div></div>
+
+
+</div>
+</div></main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Copyright © 2021 <a href='mailto:gabriel.s.b@live.com'>Gabriel Bastos</a>.<br>
+  Template by <a href='https://gitlab.com/psachin/psachin.gitlab.io/'>Sachin Patil</a> <br>
+  Last updated on Apr 08, 2021. Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.1.9).
+</div>
+</footer>
+</body>
+</html>
