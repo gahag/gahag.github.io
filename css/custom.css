@@ -28,3 +28,6 @@ figcaption {
 body a:hover {
 	color: #0C88C2;
 }
+li, .footdef {
+	margin-bottom: 0.5em !important;
+}
