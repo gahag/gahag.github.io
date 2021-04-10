@@ -4,17 +4,20 @@ body img {
 	display: block;
 	border: none;
 }
+div.org-src-container {
+	text-align: center;
+}
 pre.src {
-	margin-left: auto;
-	margin-right: auto;
-	display: table;
+	margin: auto;
+	display: inline-block;
+	text-align: left;
 	border: none;
 	box-shadow: none;
 }
 pre.src, pre.example {
-	margin-left: auto;
-	margin-right: auto;
-	display: table;
+	margin: auto;
+	display: inline-block;
+	text-align: left;
 	border: none;
 	box-shadow: none;
 }
