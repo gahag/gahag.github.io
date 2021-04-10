@@ -21,6 +21,10 @@ pre.src, pre.example {
 	border: none;
 	box-shadow: none;
 }
+pre.example {
+	display: flex;
+	justify-content: center;
+}
 body.pubdate {
 	border-bottom: none;
 	text-align:left;
@@ -33,4 +37,7 @@ body a:hover {
 }
 li, .footdef {
 	margin-bottom: 0.5em !important;
+}
+b {
+	font-weight: normal;
 }
