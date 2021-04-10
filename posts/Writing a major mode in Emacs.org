@@ -22,8 +22,8 @@ major mode:
     '("#")
 
     ;; Keywords:
-    '("let" "if" "then" "else" "end" "for" "in" "do" "while"
-      "function" "return" "not" "and" "or" "true" "false" "nil" "break" "self")
+    '("let" "if" "then" "else" "end" "for" "in" "do" "while" "function"
+      "return" "not" "and" "or" "true" "false" "nil" "break" "self")
 
     ;; Additional definitions:
     '()
