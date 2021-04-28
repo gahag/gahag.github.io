@@ -48,13 +48,14 @@ pre.src:hover:before { display: inline;}
 pre.src-asymptote:before { content: 'Asymptote'; }
 pre.src-awk:before { content: 'Awk'; }
 pre.src-C:before { content: 'C'; }
-/* pre.src-C++ doesn't work in CSS */
+pre.src-C\+\+:before { content: 'C++'; }
 pre.src-clojure:before { content: 'Clojure'; }
 pre.src-css:before { content: 'CSS'; }
 pre.src-D:before { content: 'D'; }
 pre.src-ditaa:before { content: 'ditaa'; }
 pre.src-dot:before { content: 'Graphviz'; }
 pre.src-calc:before { content: 'Emacs Calc'; }
+pre.src-elisp:before { content: 'Emacs Lisp'; }
 pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
 pre.src-fortran:before { content: 'Fortran'; }
 pre.src-gnuplot:before { content: 'gnuplot'; }
