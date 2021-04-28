@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- Apr 28, 2021 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Values and References</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Gahag" />
+<link rel='icon' type='image/png' href='/images/favicon.png'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='preconnect' href='https://fonts.gstatic.com'>
+<link href='https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap' rel='stylesheet'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+<div class='intro'>
+	<img src='/images/about/profile.png' alt='gahag' class='no-border'/>
+	<h1>
+		<span class="black">Gahag's Blog</span>
+	</h1>
+</div>
+
+<div class='nav'>
+	<ul>
+		<li><a href='/'>Home</a> -</li>
+		<li><a href='http://github.com/gahag'>Github</a> -</li>
+		<li><a href='/about/'>About</a></li>
+	</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Values and References
+<br />
+<span class="subtitle">Published on Apr 28, 2021 by Gahag.</span>
+</h1>
+<p>
+One aspect of programming languages that can cause a lot of confusion, even for
+experienced programmers, is the dynamics between values and references. This post is an
+attempt at making a comprehensive guide of such dynamics, comprising the models that are
+most commonly adopted. Therefore, the insights provided here should apply to most
+programming languages.
+</p>
+
+<section id="outline-container-orgceeee8c" class="outline-2">
+<h2 id="orgceeee8c">Definitions</h2>
+<div class="outline-text-2" id="text-orgceeee8c">
+<p>
+The common definitions of values and references can be confusing. I&rsquo;ll adopt an
+unconventional definition, which I believe will help to prevent such confusion.
+</p>
+
+<p>
+<b>Values</b> are data. Be it an integer, a string, an array, a tree, an object, or any other
+data structure. We&rsquo;ll consider data and value to be a synonym. Computers store data in
+their memory, and therefore the memory is nothing but the place where values are stored.
+</p>
+
+<p>
+<b>References</b> are a special kind of data, which refer to other data. As data and value are
+synonyms, references are values that point to other values. As computers store data in
+their memory, the way we have to refer to values is by using memory addresses. Memory
+addresses are simply integers, and integers are values. Hence <b>references are values</b>, but
+not all values are references.
+</p>
+
+<p>
+Here are some examples of values in memory:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> Memory</caption>
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-center" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Address</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-center">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-left">Integer</td>
+<td class="org-center">12345</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">String</td>
+<td class="org-center">&ldquo;Hello world!&rdquo;</td>
+</tr>
+
+<tr>
+<td class="org-right">16</td>
+<td class="org-left">Object</td>
+<td class="org-center">&lt;Some object instance&gt;</td>
+</tr>
+
+<tr>
+<td class="org-right">128</td>
+<td class="org-left">Reference</td>
+<td class="org-center">16</td>
+</tr>
+</tbody>
+</table>
+<p>
+In this example, the reference points to the object in memory address 16.
+</p>
+</div>
+</section>
+<section id="outline-container-orgac78e0e" class="outline-2">
+<h2 id="orgac78e0e">Variables</h2>
+<div class="outline-text-2" id="text-orgac78e0e">
+<p>
+Variables are aliases for memory regions. Therefore, variables are aliases for values,
+because memory is data. A variable aliases the <b>same</b> memory region during it&rsquo;s entire
+lifetime. This means that the <b>content</b> of such region may change, but we cannot change
+the region location or boundaries. We&rsquo;ll talk more about memory regions and organization
+in the following section.
+</p>
+</div>
+</section>
+<section id="outline-container-org3d14da8" class="outline-2">
+<h2 id="org3d14da8">Memory</h2>
+<div class="outline-text-2" id="text-org3d14da8">
+<p>
+The memory layout for most computer programs is divided into two disjoint macro regions:
+the Heap and the Stack. These are not to be confused with the generic data structures of
+the same names. One will almost never manage the Heap and the Stack directly, as the
+compiler and the standard libraries will take care of those for us. We just need to know
+in which of them our values will be placed, and what are the consequences of such
+placement.
+</p>
+
+<p>
+The Stack is organized according to function calls, and therefore respects scoping
+rules. Being limited in size, it can&rsquo;t store large amounts of data. If we reach the
+maximum Stack size, the infamous <i>Stack overflow</i> error occurs, and the program will
+crash. Each function call corresponds to a frame in the Stack.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 2:</span> Stack. References point to the Heap in the next table</caption>
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-center" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Address</th>
+<th scope="col" class="org-left">Variable</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-center">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right"><b>Frame #1</b></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-center">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">0</td>
+<td class="org-left"><code>counter</code></td>
+<td class="org-left">Integer</td>
+<td class="org-center">12345</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left"><code>my_object</code></td>
+<td class="org-left">Reference</td>
+<td class="org-center">16</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right"><b>Frame #2</b></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-center">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">32</td>
+<td class="org-left"><code>my_string</code></td>
+<td class="org-left">Reference</td>
+<td class="org-center">4</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right"><b>Frame #3</b></td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-center">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+<td class="org-center">&#x2026;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+The Heap on the other hand follows no specific organization, and is abundant in size. It
+mainly serves the purpose of supporting large data, and data that does not follow any
+particular function&rsquo;s scope lifetime.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 3:</span> Heap</caption>
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-center" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Address</th>
+<th scope="col" class="org-left">Type</th>
+<th scope="col" class="org-center">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-left">Integer</td>
+<td class="org-center">12345</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">String</td>
+<td class="org-center">&ldquo;Hello world!&rdquo;</td>
+</tr>
+
+<tr>
+<td class="org-right">16</td>
+<td class="org-left">Object</td>
+<td class="org-center">&lt;Some object instance&gt;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+In most programming languages, local variables in functions always alias memory regions
+in the Stack. They may be integers, data structures, objects, references, or anything
+else really. Some languages like Python define <b>all variables as references</b>, and place
+all other types of data in the Heap. Languages like C++ allow one to choose where each
+instance of data will be placed, allowing you to have some objects in the Heap, and some
+in the Stack.
+</p>
+
+<p>
+As variables are nothing but aliases for memory regions, how does variable assignment
+work? Usually, it&rsquo;s nothing but copying the plain memory contents. The only exception I
+know of is C++, which allows one to override the assignment operator, allowing the
+programmer to provide a custom copy algorithm.
+</p>
+</div>
+</section>
+<section id="outline-container-org46d0cb3" class="outline-2">
+<h2 id="org46d0cb3">Parameters</h2>
+<div class="outline-text-2" id="text-org46d0cb3">
+<p>
+Often, confusion arises when function parameters come into play. Parameters are a
+special type of local variable, and therefore are placed in the Stack. When one passes
+arguments to a function, an assignment to the parameter variable happens behind the
+curtains. And in most programming languages, assignment means copying.
+</p>
+
+<p>
+Therefore, this
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">void</span> <span class="org-function-name">fun</span>(<span class="org-type">T</span> <span class="org-variable-name">arg</span>) {
+  <span class="org-comment-delimiter">//  </span><span class="org-comment">Body...</span>
+}
+<span class="org-type">T</span> <span class="org-variable-name">my_arg</span> = <span class="org-comment-delimiter">/* </span><span class="org-comment">...</span><span class="org-comment-delimiter"> */</span>;
+<span class="org-function-name">fun</span>(my_arg);
+</pre>
+</div>
+<p>
+is usually equivalent to the following:
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">T</span> <span class="org-variable-name">my_arg</span> = <span class="org-comment-delimiter">/* </span><span class="org-comment">...</span><span class="org-comment-delimiter"> */</span>;
+<span class="org-type">T</span> <span class="org-variable-name">arg</span> = my_arg;
+{
+  <span class="org-comment-delimiter">//  </span><span class="org-comment">Body...</span>
+}
+</pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgf4d27d4" class="outline-2">
+<h2 id="orgf4d27d4">Examples</h2>
+<div class="outline-text-2" id="text-orgf4d27d4">
+<p>
+Let&rsquo;s see some examples that explore these concepts. Try to guess what will happen in
+each example. Hover the cursor over the boxes to see the resulting output.
+</p>
+</div>
+<div id="outline-container-org9e8226f" class="outline-3">
+<h3 id="org9e8226f">Python</h3>
+<div class="outline-text-3" id="text-org9e8226f">
+<p>
+Remember, in Python <b>all variables are references</b> to Heap-allocated objects. Are the
+following lists being copied on assignment, or is it just the variables (which are
+references) being copied?
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">list1</span> = [1]
+
+<span class="org-variable-name">list2</span> = list1
+list2.append(2)
+
+<span class="org-variable-name">list2</span> = [3]
+list2.append(4)
+
+<span class="org-keyword">print</span>(<span class="org-string">'list1:'</span>, list1)
+<span class="org-keyword">print</span>(<span class="org-string">'list2:'</span>, list2)
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+list1: [1, 2]
+list2: [3, 4]
+</pre>
+
+<p>
+When assigning one variable to another, only the variable is copied, not the referred
+object. When assigning to a new list, the variable becomes a reference to such list. No
+lists are copied in this example, only references.
+</p>
+
+</div>
+
+<p>
+Let&rsquo;s see another example. Note that primitive objects like integers and strings are
+immutable in Python.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">var1</span> = 1
+<span class="org-variable-name">var2</span> = var1
+<span class="org-variable-name">var2</span> += 1
+
+<span class="org-keyword">print</span>(<span class="org-string">'var1:'</span>, var1)
+<span class="org-keyword">print</span>(<span class="org-string">'var2:'</span>, var2)
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+var1: 1
+var2: 2
+</pre>
+
+<p>
+As integers are immutable, the sum creates a new integer object, which is then assigned
+to <code>var2</code>.
+</p>
+
+</div>
+
+<p>
+What about values inside data structures? Do references work the same way in this case?
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-variable-name">my_dict</span> = {
+  <span class="org-string">'key'</span>: [1, 2, 3, 4], <span class="org-comment-delimiter"># </span><span class="org-comment">A list inside a dict.</span>
+}
+
+<span class="org-variable-name">var</span> = my_dict[<span class="org-string">'key'</span>]
+var.append(5)
+
+<span class="org-keyword">print</span>(<span class="org-string">'my_dict[key]:'</span>, my_dict[<span class="org-string">'key'</span>])
+<span class="org-keyword">print</span>(<span class="org-string">'var:'</span>, var)
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+my_dict[key]: [1, 2, 3, 4, 5]
+var: [1, 2, 3, 4, 5]
+</pre>
+
+<p>
+Here, the variable is a reference that points to the object inside the
+dictionary. References work regardless if the value is in some data structure.
+</p>
+
+</div>
+
+<p>
+What about classes? Keep in mind that all objects are Heap-allocated in Python.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">MyCounter</span>:
+  <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, value):
+    <span class="org-keyword">self</span>._value = value
+
+  <span class="org-keyword">def</span> <span class="org-function-name">value</span>(<span class="org-keyword">self</span>):
+    <span class="org-keyword">return</span> <span class="org-keyword">self</span>._value
+
+  <span class="org-keyword">def</span> <span class="org-function-name">increment</span>(<span class="org-keyword">self</span>):
+    <span class="org-keyword">self</span>._value += 1
+
+<span class="org-variable-name">counter</span> = MyCounter(1)
+<span class="org-variable-name">other_counter</span> = counter
+
+counter.increment()
+other_counter.increment()
+
+<span class="org-keyword">print</span>(<span class="org-string">'counter: '</span>, counter.value())
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+counter:  3
+</pre>
+
+<p>
+Python will not copy objects on assignment, just the reference.
+</p>
+
+</div>
+
+<p>
+What about function parameters?
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span class="org-keyword">def</span> <span class="org-function-name">assign</span>(arg):
+  <span class="org-variable-name">arg</span> = [1, 2, 3, 4]
+
+<span class="org-keyword">def</span> <span class="org-function-name">mutate</span>(arg):
+  arg.append(5)
+
+<span class="org-variable-name">my_list</span> = [1, 2]
+assign(my_list)
+mutate(my_list)
+
+<span class="org-keyword">print</span>(<span class="org-string">'my_list: '</span>, my_list)
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+my_list:  [1, 2, 5]
+</pre>
+
+<p>
+The assignment in the <code>assign</code> function is not observable outside the function itself,
+because parameters are like local variables. On the other hand, mutation in <code>mutate</code> is
+observable, because <code>arg</code> and <code>my_list</code> refer to the same list.
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org72a394e" class="outline-3">
+<h3 id="org72a394e">C++</h3>
+<div class="outline-text-3" id="text-org72a394e">
+<p>
+C++ is a language that allows the programmer to decide whether to place values in the
+Stack or in the Heap. As C++ can get quite complicated, we&rsquo;ll only see some basic
+examples. Keep in mind that variables are only references when their type is annotated
+with <code>&amp;</code>, and they can refer to objects both in the Stack and in the Heap. While objects
+are allocated in the Stack unless stated otherwise, classes like <code>std::vector</code> and
+<code>std::string</code> will explicitly place their elements in the Heap.
+</p>
+
+<p>
+The examples will make use of the following includes and helper function:
+</p>
+<div class="org-src-container">
+<pre class="src src-C++" id="org8a010b5"><span class="org-preprocessor">#include</span> <span class="org-string">&lt;iostream&gt;</span>
+<span class="org-preprocessor">#include</span> <span class="org-string">&lt;vector&gt;</span>
+
+
+<span class="org-type">void</span> <span class="org-function-name">print_vec</span>(<span class="org-keyword">const</span> <span class="org-type">char</span>* <span class="org-variable-name">name</span>, <span class="org-keyword">const</span> <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt;&amp; <span class="org-variable-name">vec</span>) {
+  <span class="org-constant">std</span>::cout &lt;&lt; name &lt;&lt; <span class="org-string">": "</span>;
+
+  <span class="org-keyword">for</span> (<span class="org-keyword">const</span> <span class="org-keyword">auto</span>&amp; <span class="org-variable-name">i</span>: vec)
+    <span class="org-constant">std</span>::cout &lt;&lt; i &lt;&lt; <span class="org-string">' '</span>;
+
+  <span class="org-constant">std</span>::cout &lt;&lt; <span class="org-string">'\n'</span>;
+}
+</pre>
+</div>
+
+<p>
+What do you think will be the output of the following example?
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">
+<span class="org-type">int</span> <span class="org-function-name">main</span>() {
+  <span class="org-comment-delimiter">// </span><span class="org-comment">This is not a reference. Even though std::vector allocates elements</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">on the Heap, the vector object itself is on the Stack.</span>
+  <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt; <span class="org-variable-name">vec1</span> { 1, 2 };
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Also not a reference.</span>
+  <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt; <span class="org-variable-name">vec2</span> = vec1;
+  vec2.push_back(3);
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">This one is a reference. Notice the &amp;.</span>
+  <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt;&amp; <span class="org-variable-name">vec3</span> = vec1;
+  vec3.push_back(42);
+
+  print_vec(<span class="org-string">"vec1"</span>, vec1);
+  print_vec(<span class="org-string">"vec2"</span>, vec2);
+  print_vec(<span class="org-string">"vec3"</span>, vec3);
+}
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+vec1: 1 2 42
+vec2: 1 2 3
+vec3: 1 2 42
+</pre>
+
+<p>
+The <code>vec1</code> object is placed on the Stack, and its elements are placed on the Heap. When
+<code>vec1</code> is assigned to <code>vec2</code>, a copy of the object is made. The copy assignment operator of
+the <code>std::vector</code> class makes sure that the Heap-allocated elements are also
+copied. Finally, <code>vec3</code> is just a reference to <code>vec1</code>.
+</p>
+
+</div>
+
+<p>
+In most programming languages, arguments are copied when passed to functions. Such
+operation is always cheap in Python, because variables are always references, which are
+just integers. In C++, variables can be of arbitrary types, and therefore the copy
+operation can be expensive.
+</p>
+<div class="org-src-container">
+<pre class="src src-C++">
+<span class="org-comment-delimiter">// </span><span class="org-comment">Here, the parameter is not a reference.</span>
+<span class="org-type">void</span> <span class="org-function-name">mutate</span>(<span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt; <span class="org-variable-name">vec</span>) {
+  vec.push_back(5);
+}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">Here, the parameter is a reference.</span>
+<span class="org-type">void</span> <span class="org-function-name">mutate_ref</span>(<span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt;&amp; <span class="org-variable-name">vec</span>) {
+  vec.push_back(42);
+}
+
+<span class="org-type">int</span> <span class="org-function-name">main</span>() {
+  <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-type">int</span>&gt; <span class="org-variable-name">vec</span> { 1, 2, 3 };
+
+  mutate(vec);
+  mutate_ref(vec);
+
+  print_vec(<span class="org-string">"vec"</span>, vec);
+}
+</pre>
+</div>
+<div class="spoiler">
+<pre class="example">
+vec: 1 2 3 42
+</pre>
+
+<p>
+In <code>mutate</code>, the vector is not passed by reference, and is therefore copied. As this
+copies not only the vector object, but also the Heap array containing the elements, the
+mutation is not observable outside the function. In <code>mutate_ref</code>, the vector is not
+copied, and thus the function call is not only faster, but the original vector is
+mutated.
+</p>
+
+</div>
+</div>
+</div>
+<div id="outline-container-org1f9eceb" class="outline-3">
+<h3 id="org1f9eceb">Conclusion</h3>
+<div class="outline-text-3" id="text-org1f9eceb">
+<p>
+I hope such insights and examples were good to prevent confusion regarding values and
+references. Please let me know of any doubts or suggestions :)
+</p>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Copyright © 2021 <a href='mailto:gabriel.s.b@live.com'>Gabriel Bastos</a>.<br>
+  Template by <a href='https://gitlab.com/psachin/psachin.gitlab.io/'>Sachin Patil</a> <br>
+  Last updated on Apr 28, 2021. Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.3).
+</div>
+</footer>
+</body>
+</html>
