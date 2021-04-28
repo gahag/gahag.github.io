@@ -113,8 +113,6 @@ PROJECT: `posts in this case."
          :sitemap-format-entry org-sitemap-format-entry
          :sitemap-style list
          :sitemap-sort-files anti-chronologically
-         :html-link-home "/"
-         :html-link-up "/"
          :html-head-include-scripts t
          :html-head-include-default-style nil
          :html-head ,website-html-head
