@@ -12,7 +12,7 @@
 <link rel='icon' type='image/png' href='/images/favicon.png'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='preconnect' href='https://fonts.gstatic.com'>
-<link href='https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap' rel='stylesheet'>
+<link href='https://code.cdn.mozilla.net/fonts/zilla-slab.css' rel='stylesheet'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
@@ -214,14 +214,14 @@ language name):
   <span class="org-comment-delimiter"># </span><span class="org-comment">this case, we're splitting dotted names, so that the dot itself</span>
   <span class="org-comment-delimiter"># </span><span class="org-comment">won't be highlighted as a name.</span>
   <span class="org-keyword">def</span> <span class="org-function-name">get_tokens_unprocessed</span>(<span class="org-keyword">self</span>, text):
-    <span class="org-keyword">for</span> index, token, value <span class="org-keyword">in</span> RegexLexer.get_tokens_unprocessed(<span class="org-keyword">self</span>, text):
-      <span class="org-keyword">if</span> token <span class="org-keyword">is</span> Name <span class="org-keyword">and</span> <span class="org-string">'.'</span> <span class="org-keyword">in</span> value:
-        <span class="org-variable-name">a</span>, <span class="org-variable-name">b</span> = value.split(<span class="org-string">'.'</span>)
-        <span class="org-keyword">yield</span> index, Name, a
-        <span class="org-keyword">yield</span> index + <span class="org-builtin">len</span>(a), Punctuation, <span class="org-string">'.'</span>
-        <span class="org-keyword">yield</span> index + <span class="org-builtin">len</span>(a) + 1, Name, b
+    <span class="org-keyword">for</span> ix, tok, val <span class="org-keyword">in</span> RegexLexer.get_tokens_unprocessed(<span class="org-keyword">self</span>, text):
+      <span class="org-keyword">if</span> tok <span class="org-keyword">is</span> Name <span class="org-keyword">and</span> <span class="org-string">'.'</span> <span class="org-keyword">in</span> val:
+        <span class="org-variable-name">a</span>, <span class="org-variable-name">b</span> = val.split(<span class="org-string">'.'</span>)
+        <span class="org-keyword">yield</span> ix, Name, a
+        <span class="org-keyword">yield</span> ix + <span class="org-builtin">len</span>(a), Punctuation, <span class="org-string">'.'</span>
+        <span class="org-keyword">yield</span> ix + <span class="org-builtin">len</span>(a) + 1, Name, b
         <span class="org-keyword">continue</span>
-      <span class="org-keyword">yield</span> index, token, value
+      <span class="org-keyword">yield</span> ix, tok, val
 </pre>
 </div>
 

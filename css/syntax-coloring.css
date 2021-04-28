@@ -38,11 +38,10 @@ pre.src {
 pre.src:before {
   display: none;
   position: absolute;
-  background-color: white;
-  top: -10px;
+  color: #ccc;
+  top: -5px;
   right: 10px;
   padding: 3px;
-  border: 1px solid black;
 }
 pre.src:hover:before { display: inline;}
 /* Languages per Org manual */
