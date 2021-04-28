@@ -123,14 +123,14 @@ language name):
     # this case, we're splitting dotted names, so that the dot itself
     # won't be highlighted as a name.
     def get_tokens_unprocessed(self, text):
-      for index, token, value in RegexLexer.get_tokens_unprocessed(self, text):
-        if token is Name and '.' in value:
-          a, b = value.split('.')
-          yield index, Name, a
-          yield index + len(a), Punctuation, '.'
-          yield index + len(a) + 1, Name, b
+      for ix, tok, val in RegexLexer.get_tokens_unprocessed(self, text):
+        if tok is Name and '.' in val:
+          a, b = val.split('.')
+          yield ix, Name, a
+          yield ix + len(a), Punctuation, '.'
+          yield ix + len(a) + 1, Name, b
           continue
-        yield index, token, value
+        yield ix, tok, val
 #+end_src
 
 Insert the following contents for =setup.py= (you may want to replace /hush/ with your
