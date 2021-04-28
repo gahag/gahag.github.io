@@ -1,0 +1,321 @@
+#+title: Values and References
+#+date: <2021-04-28 Wed>
+#+filetags: value reference pass programming languages
+#+setupfile: ../org-templates/post.org
+
+
+One aspect of programming languages that can cause a lot of confusion, even for
+experienced programmers, is the dynamics between values and references. This post is an
+attempt at making a comprehensive guide of such dynamics, comprising the models that are
+most commonly adopted. Therefore, the insights provided here should apply to most
+programming languages.
+
+* Definitions
+  The common definitions of values and references can be confusing. I'll adopt an
+  unconventional definition, which I believe will help to prevent such confusion.
+
+  *Values* are data. Be it an integer, a string, an array, a tree, an object, or any other
+  data structure. We'll consider data and value to be a synonym. Computers store data in
+  their memory, and therefore the memory is nothing but the place where values are stored.
+
+  *References* are a special kind of data, which refer to other data. As data and value are
+  synonyms, references are values that point to other values. As computers store data in
+  their memory, the way we have to refer to values is by using memory addresses. Memory
+  addresses are simply integers, and integers are values. Hence *references are values*, but
+  not all values are references.
+
+  Here are some examples of values in memory:
+  #+caption: Memory
+  |     <r> | <l>       |          <c>           |
+  | Address | Type      |        Content         |
+  |---------+-----------+------------------------|
+  |       0 | Integer   |         12345          |
+  |       4 | String    |     "Hello world!"     |
+  |      16 | Object    | <Some object instance> |
+  |     128 | Reference |           16           |
+  In this example, the reference points to the object in memory address 16.
+* Variables
+  Variables are aliases for memory regions. Therefore, variables are aliases for values,
+  because memory is data. A variable aliases the *same* memory region during it's entire
+  lifetime. This means that the *content* of such region may change, but we cannot change
+  the region location or boundaries. We'll talk more about memory regions and organization
+  in the following section.
+* Memory
+  The memory layout for most computer programs is divided into two disjoint macro regions:
+  the Heap and the Stack. These are not to be confused with the generic data structures of
+  the same names. One will almost never manage the Heap and the Stack directly, as the
+  compiler and the standard libraries will take care of those for us. We just need to know
+  in which of them our values will be placed, and what are the consequences of such
+  placement.
+
+  The Stack is organized according to function calls, and therefore respects scoping
+  rules. Being limited in size, it can't store large amounts of data. If we reach the
+  maximum Stack size, the infamous /Stack overflow/ error occurs, and the program will
+  crash. Each function call corresponds to a frame in the Stack.
+
+  #+caption: Stack. References point to the Heap in the next table
+  |      <r> | <l>       | <l>       |   <c>   |
+  |  Address | Variable  | Type      | Content |
+  |----------+-----------+-----------+---------|
+  | *Frame #1* |           |           |         |
+  |        0 | =counter=   | Integer   |  12345  |
+  |        4 | =my_object= | Reference |   16    |
+  |----------+-----------+-----------+---------|
+  | *Frame #2* |           |           |         |
+  |       32 | =my_string= | Reference |    4    |
+  |----------+-----------+-----------+---------|
+  | *Frame #3* |           |           |         |
+  |      ... | ...       | ...       |   ...   |
+
+  The Heap on the other hand follows no specific organization, and is abundant in size. It
+  mainly serves the purpose of supporting large data, and data that does not follow any
+  particular function's scope lifetime.
+
+  #+caption: Heap
+  |     <r> | <l>     |          <c>           |
+  | Address | Type    |        Content         |
+  |---------+---------+------------------------|
+  |       0 | Integer |         12345          |
+  |       4 | String  |     "Hello world!"     |
+  |      16 | Object  | <Some object instance> |
+
+  In most programming languages, local variables in functions always alias memory regions
+  in the Stack. They may be integers, data structures, objects, references, or anything
+  else really. Some languages like Python define *all variables as references*, and place
+  all other types of data in the Heap. Languages like C++ allow one to choose where each
+  instance of data will be placed, allowing you to have some objects in the Heap, and some
+  in the Stack.
+
+  As variables are nothing but aliases for memory regions, how does variable assignment
+  work? Usually, it's nothing but copying the plain memory contents. The only exception I
+  know of is C++, which allows one to override the assignment operator, allowing the
+  programmer to provide a custom copy algorithm.
+* Parameters
+  Often, confusion arises when function parameters come into play. Parameters are a
+  special type of local variable, and therefore are placed in the Stack. When one passes
+  arguments to a function, an assignment to the parameter variable happens behind the
+  curtains. And in most programming languages, assignment means copying.
+
+  Therefore, this
+  #+begin_src C
+    void fun(T arg) {
+      //  Body...
+    }
+    T my_arg = /* ... */;
+    fun(my_arg);
+  #+end_src
+  is usually equivalent to the following:
+  #+begin_src C
+    T my_arg = /* ... */;
+    T arg = my_arg;
+    {
+      //  Body...
+    }
+  #+end_src
+* Examples
+  Let's see some examples that explore these concepts. Try to guess what will happen in
+  each example. Hover the cursor over the boxes to see the resulting output.
+** Python
+   Remember, in Python *all variables are references* to Heap-allocated objects. Are the
+   following lists being copied on assignment, or is it just the variables (which are
+   references) being copied?
+   #+begin_src python :results output :exports both
+     list1 = [1]
+
+     list2 = list1
+     list2.append(2)
+
+     list2 = [3]
+     list2.append(4)
+
+     print('list1:', list1)
+     print('list2:', list2)
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : list1: [1, 2]
+   : list2: [3, 4]
+   When assigning one variable to another, only the variable is copied, not the referred
+   object. When assigning to a new list, the variable becomes a reference to such list. No
+   lists are copied in this example, only references.
+   #+end_spoiler
+
+   Let's see another example. Note that primitive objects like integers and strings are
+   immutable in Python.
+   #+begin_src python :results output :exports both
+     var1 = 1
+     var2 = var1
+     var2 += 1
+
+     print('var1:', var1)
+     print('var2:', var2)
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : var1: 1
+   : var2: 2
+   As integers are immutable, the sum creates a new integer object, which is then assigned
+   to =var2=.
+   #+end_spoiler
+
+   What about values inside data structures? Do references work the same way in this case?
+   #+begin_src python :results output :exports both
+     my_dict = {
+       'key': [1, 2, 3, 4], # A list inside a dict.
+     }
+
+     var = my_dict['key']
+     var.append(5)
+
+     print('my_dict[key]:', my_dict['key'])
+     print('var:', var)
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : my_dict[key]: [1, 2, 3, 4, 5]
+   : var: [1, 2, 3, 4, 5]
+   Here, the variable is a reference that points to the object inside the
+   dictionary. References work regardless if the value is in some data structure.
+   #+end_spoiler
+
+   What about classes? Keep in mind that all objects are Heap-allocated in Python.
+   #+begin_src python :results output :exports both
+     class MyCounter:
+       def __init__(self, value):
+         self._value = value
+
+       def value(self):
+         return self._value
+
+       def increment(self):
+         self._value += 1
+
+     counter = MyCounter(1)
+     other_counter = counter
+
+     counter.increment()
+     other_counter.increment()
+
+     print('counter: ', counter.value())
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : counter:  3
+   Python will not copy objects on assignment, just the reference.
+   #+end_spoiler
+
+   What about function parameters?
+   #+begin_src python :results output :exports both
+     def assign(arg):
+       arg = [1, 2, 3, 4]
+
+     def mutate(arg):
+       arg.append(5)
+
+     my_list = [1, 2]
+     assign(my_list)
+     mutate(my_list)
+
+     print('my_list: ', my_list)
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : my_list:  [1, 2, 5]
+   The assignment in the =assign= function is not observable outside the function itself,
+   because parameters are like local variables. On the other hand, mutation in =mutate= is
+   observable, because =arg= and =my_list= refer to the same list.
+   #+end_spoiler
+** C++
+   C++ is a language that allows the programmer to decide whether to place values in the
+   Stack or in the Heap. As C++ can get quite complicated, we'll only see some basic
+   examples. Keep in mind that variables are only references when their type is annotated
+   with =&=, and they can refer to objects both in the Stack and in the Heap. While objects
+   are allocated in the Stack unless stated otherwise, classes like =std::vector= and
+   =std::string= will explicitly place their elements in the Heap.
+
+   The examples will make use of the following includes and helper function:
+   #+name: cpp-setup
+   #+begin_src C++
+     #include <iostream>
+     #include <vector>
+
+
+     void print_vec(const char* name, const std::vector<int>& vec) {
+       std::cout << name << ": ";
+
+       for (const auto& i: vec)
+         std::cout << i << ' ';
+
+       std::cout << '\n';
+     }
+   #+end_src
+
+   What do you think will be the output of the following example?
+   #+begin_src C++ :results output :exports both :noweb strip-export
+     <<cpp-setup>>
+     int main() {
+       // This is not a reference. Even though std::vector allocates elements
+       // on the Heap, the vector object itself is on the Stack.
+       std::vector<int> vec1 { 1, 2 };
+
+       // Also not a reference.
+       std::vector<int> vec2 = vec1;
+       vec2.push_back(3);
+
+       // This one is a reference. Notice the &.
+       std::vector<int>& vec3 = vec1;
+       vec3.push_back(42);
+
+       print_vec("vec1", vec1);
+       print_vec("vec2", vec2);
+       print_vec("vec3", vec3);
+     }
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : vec1: 1 2 42
+   : vec2: 1 2 3
+   : vec3: 1 2 42
+   The =vec1= object is placed on the Stack, and its elements are placed on the Heap. When
+   =vec1= is assigned to =vec2=, a copy of the object is made. The copy assignment operator of
+   the =std::vector= class makes sure that the Heap-allocated elements are also
+   copied. Finally, =vec3= is just a reference to =vec1=.
+   #+end_spoiler
+
+   In most programming languages, arguments are copied when passed to functions. Such
+   operation is always cheap in Python, because variables are always references, which are
+   just integers. In C++, variables can be of arbitrary types, and therefore the copy
+   operation can be expensive.
+   #+begin_src C++ :results output :exports both :noweb strip-export
+     <<cpp-setup>>
+     // Here, the parameter is not a reference.
+     void mutate(std::vector<int> vec) {
+       vec.push_back(5);
+     }
+
+     // Here, the parameter is a reference.
+     void mutate_ref(std::vector<int>& vec) {
+       vec.push_back(42);
+     }
+
+     int main() {
+       std::vector<int> vec { 1, 2, 3 };
+
+       mutate(vec);
+       mutate_ref(vec);
+
+       print_vec("vec", vec);
+     }
+   #+end_src
+   #+begin_spoiler
+   #+results:
+   : vec: 1 2 3 42
+   In =mutate=, the vector is not passed by reference, and is therefore copied. As this
+   copies not only the vector object, but also the Heap array containing the elements, the
+   mutation is not observable outside the function. In =mutate_ref=, the vector is not
+   copied, and thus the function call is not only faster, but the original vector is
+   mutated.
+   #+end_spoiler
+** Conclusion
+   I hope such insights and examples were good to prevent confusion regarding values and
+   references. Please let me know of any doubts or suggestions :)
