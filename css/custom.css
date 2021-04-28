@@ -39,7 +39,7 @@ li, .footdef {
 	margin-bottom: 0.5em !important;
 }
 b a {
-	font-weight: normal;
+	font-weight: 100;
 }
 table {
 	margin: auto;

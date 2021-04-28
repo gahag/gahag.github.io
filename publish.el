@@ -50,7 +50,7 @@
   "<link rel='icon' type='image/png' href='/images/favicon.png'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='preconnect' href='https://fonts.gstatic.com'>
-<link href='https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300&display=swap' rel='stylesheet'>
+<link href='https://code.cdn.mozilla.net/fonts/zilla-slab.css' rel='stylesheet'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>")

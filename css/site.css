@@ -1,11 +1,24 @@
 body {
   font-family: 'Zilla Slab', serif;
+  font-weight: 300;
   line-height: 1.5;
   font-size: 20px;
   background: #fff;
   color: #666;
   margin: 0;
   border-top: 3px solid #1692cc;
+
+  /* Fiz weird numbers in Zilla Slab */
+  font-variant-numeric: lining-nums;
+  -moz-font-feature-settings:"lnum" 1;
+  -moz-font-feature-settings:"lnum=1";
+  -ms-font-feature-settings:"lnum" 1;
+  -o-font-feature-settings:"lnum" 1;
+  -webkit-font-feature-settings:"lnum" 1;
+  font-feature-settings:"lnum" 1;
+}
+b, .subtitle, th {
+  font-weight: 600 !important;
 }
 @media (max-width: 799px) {
   body {
@@ -17,7 +30,7 @@ body h1,
 body h2,
 body h3,
 body h4 {
-  font-weight: normal;
+  font-weight: lighter;
   margin: 0;
   padding: 0;
   color: #444;
@@ -57,7 +70,6 @@ body h2 {
 body h3 {
   font-size: 22px;
   margin-top: 40px;
-  font-weight: bold;
 }
 body p {
   text-align: justify;
@@ -181,7 +193,6 @@ body .intro {
 }
 body .intro h1 {
   font-size: 42px;
-  font-weight: bold;
   line-height: 1em;
   margin: .3em;
   padding: 0;
@@ -215,7 +226,7 @@ body .nav ul li a {
   display: inline-block;
   /* padding-right: 6px; */
   border-radius: 0;
-  font-weight: normal;
+  font-weight: lighter;
   color: #6a6a6a;
 }
 body #disqus_thread {
