@@ -1,0 +1,109 @@
+#+title: Deserializing collections with invalid items using Rust and Serde
+#+date: <2021-06-06 Sun>
+#+filetags: rust serde array vec sequence collection invalid elements items
+#+setupfile: ../org-templates/post.org
+
+
+Let's say you want to deserialize data in Rust using the following data model:
+#+begin_src rust
+  #[derive(Debug, serde::Deserialize)]
+  struct Item {
+    name: String,
+    value: f64,
+  }
+
+
+  #[derive(Debug, serde::Deserialize)]
+  struct ApplicationData {
+    items: Vec<Item>,
+  }
+#+end_src
+
+But unfortunately, your data looks like this:
+#+begin_src json
+  {
+    "items": [
+      {
+        "name": "prop1",
+        "value": 0
+      },
+      {
+        "name": "prop2",
+        "value": "error: missing property"
+      },
+      {
+        "name": "prop3",
+        "value": 3.14
+      },
+      {
+        "name": "prop4",
+        "value": [ 0.1, 0.2, 0.3 ]
+      }
+    ]
+  }
+#+end_src
+
+You're only interested in the objects where =value= is a =float=, but there are some objects
+where this field has some other type. How can we instrument Rust's amazing Serde to handle
+this? We must use a custom [[https://serde.rs/impl-deserialize.html#the-visitor-trait][Visitor]]!
+
+The idea is to skip values that do not fit the =Item= model when deserializing our
+collection. Our visitor must try to deserialize an =Item=, and if it fails because the
+values is not a valid =Item=, then ignore such value and move on.
+
+Note that we must *not* ignore other kinds of errors, such as when the input data is
+malformed. To do this, we can use an untagged union containing a field of type =IgnoredAny=,
+which ignores all kinds of values, but stops on parse errors. This way, we can try and
+deserialize an =Item=, or ignore the value.
+
+Here is the code:
+#+begin_src rust
+  #[derive(Debug)]
+  struct Items(Vec<Item>);
+
+  impl<'de> serde::Deserialize<'de> for Items {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+      D: serde::Deserializer<'de>
+    {
+      struct SkipInvalid;
+
+      impl<'de> serde::de::Visitor<'de> for SkipInvalid {
+        type Value = Items;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+          formatter.write_str("heterogeneous items array")
+        }
+
+        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+        where
+          A: serde::de::SeqAccess<'de>,
+        {
+          #[derive(serde::Deserialize)]
+          #[serde(untagged)]
+          enum ItemOrIgnore {
+            Item(Item),
+            // Use IgnoredAny to skip any value that is not a valid Item.
+            Other(serde::de::IgnoredAny),
+          }
+
+          let mut vec = Vec::new();
+
+          while let Some(item) = seq.next_element::<ItemOrIgnore>()? {
+            if let ItemOrIgnore::Item(value) = item {
+              vec.push(value);
+            }
+          }
+
+          Ok(Items(vec))
+        }
+      }
+
+      deserializer.deserialize_seq(SkipInvalid)
+    }
+  }
+#+end_src
+
+
+Now, we just need to replace =Vec<Item>= with =Items= in =ApplicationData=, and we're done. Rust
+and Serde are amazing!
