@@ -17,7 +17,7 @@
   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (package-refresh-contents))
-(dolist (pkg '(htmlize))
+(dolist (pkg '(htmlize rust-mode))
   (unless (package-installed-p pkg)
     (package-install pkg)))
 
