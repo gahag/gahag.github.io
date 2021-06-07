@@ -89,16 +89,16 @@ for the JavaScript code in this tag.
 Let&rsquo;s say you want to deserialize data in Rust using the following data model:
 </p>
 <div class="org-src-container">
-<pre class="src src-rust">#[derive(Debug, serde::Deserialize)]
-struct Item {
-  name: String,
-  value: f64,
+<pre class="src src-rust"><span class="org-preprocessor">#[derive(Debug, serde::Deserialize)]</span>
+<span class="org-keyword">struct</span> <span class="org-type">Item</span> {
+  <span class="org-variable-name">name</span>: <span class="org-type">String</span>,
+  <span class="org-variable-name">value</span>: <span class="org-type">f64</span>,
 }
 
 
-#[derive(Debug, serde::Deserialize)]
-struct ApplicationData {
-  items: Vec&lt;Item&gt;,
+<span class="org-preprocessor">#[derive(Debug, serde::Deserialize)]</span>
+<span class="org-keyword">struct</span> <span class="org-type">ApplicationData</span> {
+  <span class="org-variable-name">items</span>: <span class="org-type">Vec</span>&lt;<span class="org-type">Item</span>&gt;,
 }
 </pre>
 </div>
@@ -153,48 +153,48 @@ deserialize an <code>Item</code>, or ignore the value.
 Here is the code:
 </p>
 <div class="org-src-container">
-<pre class="src src-rust">#[derive(Debug)]
-struct Items(Vec&lt;Item&gt;);
+<pre class="src src-rust"><span class="org-preprocessor">#[derive(Debug)]</span>
+<span class="org-keyword">struct</span> <span class="org-type">Items</span>(<span class="org-type">Vec</span>&lt;<span class="org-type">Item</span>&gt;);
 
-impl&lt;'de&gt; serde::Deserialize&lt;'de&gt; for Items {
-  fn deserialize&lt;D&gt;(deserializer: D) -&gt; Result&lt;Self, D::Error&gt;
-  where
-    D: serde::Deserializer&lt;'de&gt;
+<span class="org-keyword">impl</span>&lt;'<span class="org-variable-name">de</span>&gt; <span class="org-constant">serde</span>::<span class="org-type">Deserialize</span>&lt;'<span class="org-variable-name">de</span>&gt; <span class="org-keyword">for</span> <span class="org-type">Items</span> {
+  <span class="org-keyword">fn</span> <span class="org-function-name">deserialize</span>&lt;<span class="org-type">D</span>&gt;(<span class="org-variable-name">deserializer</span>: <span class="org-type">D</span>) -&gt; <span class="org-type">Result</span>&lt;<span class="org-type">Self</span>, <span class="org-type">D</span>::<span class="org-type">Error</span>&gt;
+  <span class="org-keyword">where</span>
+    <span class="org-variable-name">D</span>: <span class="org-constant">serde</span>::<span class="org-type">Deserializer</span>&lt;'<span class="org-variable-name">de</span>&gt;
   {
-    struct SkipInvalid;
+    <span class="org-keyword">struct</span> <span class="org-type">SkipInvalid</span>;
 
-    impl&lt;'de&gt; serde::de::Visitor&lt;'de&gt; for SkipInvalid {
-      type Value = Items;
+    <span class="org-keyword">impl</span>&lt;'<span class="org-variable-name">de</span>&gt; <span class="org-constant">serde</span>::<span class="org-constant">de</span>::<span class="org-type">Visitor</span>&lt;'<span class="org-variable-name">de</span>&gt; <span class="org-keyword">for</span> <span class="org-type">SkipInvalid</span> {
+      <span class="org-keyword">type</span> <span class="org-type">Value</span> = <span class="org-type">Items</span>;
 
-      fn expecting(&amp;self, formatter: &amp;mut fmt::Formatter) -&gt; fmt::Result {
-	formatter.write_str("heterogeneous items array")
+      <span class="org-keyword">fn</span> <span class="org-function-name">expecting</span>(&amp;<span class="org-keyword">self</span>, <span class="org-variable-name">formatter</span>: &amp;<span class="org-keyword">mut</span> <span class="org-constant">fmt</span>::<span class="org-type">Formatter</span>) -&gt; <span class="org-constant">fmt</span>::<span class="org-type">Result</span> {
+        formatter.write_str(<span class="org-string">"heterogeneous items array"</span>)
       }
 
-      fn visit_seq&lt;A&gt;(self, mut seq: A) -&gt; Result&lt;Self::Value, A::Error&gt;
-      where
-	A: serde::de::SeqAccess&lt;'de&gt;,
+      <span class="org-keyword">fn</span> <span class="org-function-name">visit_seq</span>&lt;<span class="org-type">A</span>&gt;(<span class="org-keyword">self</span>, <span class="org-keyword">mut</span> <span class="org-variable-name">seq</span>: <span class="org-type">A</span>) -&gt; <span class="org-type">Result</span>&lt;<span class="org-type">Self</span>::<span class="org-type">Value</span>, <span class="org-type">A</span>::<span class="org-type">Error</span>&gt;
+      <span class="org-keyword">where</span>
+        <span class="org-variable-name">A</span>: <span class="org-constant">serde</span>::<span class="org-constant">de</span>::<span class="org-type">SeqAccess</span>&lt;'<span class="org-variable-name">de</span>&gt;,
       {
-	#[derive(serde::Deserialize)]
-	#[serde(untagged)]
-	enum ItemOrIgnore {
-	  Item(Item),
-	  // Use IgnoredAny to skip any value that is not a valid Item.
-	  Other(serde::de::IgnoredAny),
-	}
+        <span class="org-preprocessor">#[derive(serde::Deserialize)]</span>
+        <span class="org-preprocessor">#[serde(untagged)]</span>
+        <span class="org-keyword">enum</span> <span class="org-type">ItemOrIgnore</span> {
+          <span class="org-type">Item</span>(<span class="org-type">Item</span>),
+          <span class="org-comment-delimiter">// </span><span class="org-comment">Use IgnoredAny to skip any value that is not a valid Item.</span>
+          <span class="org-type">Other</span>(<span class="org-constant">serde</span>::<span class="org-constant">de</span>::<span class="org-type">IgnoredAny</span>),
+        }
 
-	let mut vec = Vec::new();
+        <span class="org-keyword">let</span> <span class="org-keyword">mut</span> <span class="org-variable-name">vec</span> = <span class="org-type">Vec</span>::new();
 
-	while let Some(item) = seq.next_element::&lt;ItemOrIgnore&gt;()? {
-	  if let ItemOrIgnore::Item(value) = item {
-	    vec.push(value);
-	  }
-	}
+        <span class="org-keyword">while</span> <span class="org-keyword">let</span> <span class="org-type">Some</span>(item) = seq.next_element::&lt;<span class="org-type">ItemOrIgnore</span>&gt;()<span class="org-rust-question-mark">?</span> {
+          <span class="org-keyword">if</span> <span class="org-keyword">let</span> <span class="org-type">ItemOrIgnore</span>::<span class="org-type">Item</span>(value) = item {
+            vec.push(value);
+          }
+        }
 
-	Ok(Items(vec))
+        <span class="org-type">Ok</span>(<span class="org-type">Items</span>(vec))
       }
     }
 
-    deserializer.deserialize_seq(SkipInvalid)
+    deserializer.deserialize_seq(<span class="org-type">SkipInvalid</span>)
   }
 }
 </pre>
