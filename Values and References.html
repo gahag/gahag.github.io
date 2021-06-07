@@ -93,9 +93,9 @@ most commonly adopted. Therefore, the insights provided here should apply to mos
 programming languages.
 </p>
 
-<section id="outline-container-org8d940e2" class="outline-2">
-<h2 id="org8d940e2">Definitions</h2>
-<div class="outline-text-2" id="text-org8d940e2">
+<section id="outline-container-orgf86df95" class="outline-2">
+<h2 id="orgf86df95">Definitions</h2>
+<div class="outline-text-2" id="text-orgf86df95">
 <p>
 The common definitions of values and references can be confusing. I&rsquo;ll adopt an
 unconventional definition, which I believe will help to prevent such confusion.
@@ -166,9 +166,9 @@ In this example, the reference points to the object in memory address 16.
 </p>
 </div>
 </section>
-<section id="outline-container-org8e6a82f" class="outline-2">
-<h2 id="org8e6a82f">Variables</h2>
-<div class="outline-text-2" id="text-org8e6a82f">
+<section id="outline-container-org8a015ae" class="outline-2">
+<h2 id="org8a015ae">Variables</h2>
+<div class="outline-text-2" id="text-org8a015ae">
 <p>
 Variables are aliases for memory regions. Therefore, variables are aliases for values,
 because memory is data. A variable aliases the <b>same</b> memory region during it&rsquo;s entire
@@ -178,9 +178,9 @@ in the following section.
 </p>
 </div>
 </section>
-<section id="outline-container-orge17c564" class="outline-2">
-<h2 id="orge17c564">Memory</h2>
-<div class="outline-text-2" id="text-orge17c564">
+<section id="outline-container-orgca229ad" class="outline-2">
+<h2 id="orgca229ad">Memory</h2>
+<div class="outline-text-2" id="text-orgca229ad">
 <p>
 The memory layout for most computer programs is divided into two disjoint macro regions:
 the Heap and the Stack. These are not to be confused with the generic data structures of
@@ -332,9 +332,9 @@ programmer to provide a custom copy algorithm.
 </p>
 </div>
 </section>
-<section id="outline-container-org2d93141" class="outline-2">
-<h2 id="org2d93141">Parameters</h2>
-<div class="outline-text-2" id="text-org2d93141">
+<section id="outline-container-orgf49e72f" class="outline-2">
+<h2 id="orgf49e72f">Parameters</h2>
+<div class="outline-text-2" id="text-orgf49e72f">
 <p>
 Often, confusion arises when function parameters come into play. Parameters are a
 special type of local variable, and therefore are placed in the Stack. When one passes
@@ -366,17 +366,17 @@ is usually equivalent to the following:
 </div>
 </div>
 </section>
-<section id="outline-container-org81b17ab" class="outline-2">
-<h2 id="org81b17ab">Examples</h2>
-<div class="outline-text-2" id="text-org81b17ab">
+<section id="outline-container-org5ca4c37" class="outline-2">
+<h2 id="org5ca4c37">Examples</h2>
+<div class="outline-text-2" id="text-org5ca4c37">
 <p>
 Let&rsquo;s see some examples that explore these concepts. Try to guess what will happen in
 each example. Hover the cursor over the boxes to see the resulting output.
 </p>
 </div>
-<div id="outline-container-orga8fc861" class="outline-3">
-<h3 id="orga8fc861">Python</h3>
-<div class="outline-text-3" id="text-orga8fc861">
+<div id="outline-container-org75e06e4" class="outline-3">
+<h3 id="org75e06e4">Python</h3>
+<div class="outline-text-3" id="text-org75e06e4">
 <p>
 Remember, in Python <b>all variables are references</b> to Heap-allocated objects. Are the
 following lists being copied on assignment, or is it just the variables (which are
@@ -528,9 +528,9 @@ observable, because <code>arg</code> and <code>my_list</code> refer to the same 
 </div>
 </div>
 </div>
-<div id="outline-container-orgee2a82f" class="outline-3">
-<h3 id="orgee2a82f">C++</h3>
-<div class="outline-text-3" id="text-orgee2a82f">
+<div id="outline-container-orgb5d3a02" class="outline-3">
+<h3 id="orgb5d3a02">C++</h3>
+<div class="outline-text-3" id="text-orgb5d3a02">
 <p>
 C++ is a language that allows the programmer to decide whether to place values in the
 Stack or in the Heap. As C++ can get quite complicated, we&rsquo;ll only see some basic
@@ -544,7 +544,7 @@ are allocated in the Stack unless stated otherwise, classes like <code>std::vect
 The examples will make use of the following includes and helper function:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++" id="org8bc51ff"><span class="org-preprocessor">#include</span> <span class="org-string">&lt;iostream&gt;</span>
+<pre class="src src-C++" id="org752fd4c"><span class="org-preprocessor">#include</span> <span class="org-string">&lt;iostream&gt;</span>
 <span class="org-preprocessor">#include</span> <span class="org-string">&lt;vector&gt;</span>
 
 
@@ -643,9 +643,9 @@ mutated.
 </div>
 </div>
 </div>
-<div id="outline-container-org9d7a7ce" class="outline-3">
-<h3 id="org9d7a7ce">Conclusion</h3>
-<div class="outline-text-3" id="text-org9d7a7ce">
+<div id="outline-container-orgd4b0b37" class="outline-3">
+<h3 id="orgd4b0b37">Conclusion</h3>
+<div class="outline-text-3" id="text-orgd4b0b37">
 <p>
 I hope such insights and examples were good to prevent confusion regarding values and
 references. Please let me know of any doubts or suggestions :)
