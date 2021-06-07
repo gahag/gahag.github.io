@@ -6,7 +6,7 @@
 <!-- Jun 07, 2021 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>The Endless Journey</title>
+<title>Deserializing collections with invalid items using Rust and Serde</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Gahag" />
 <link rel='icon' type='image/png' href='/images/favicon.png'/>
@@ -81,25 +81,129 @@ for the JavaScript code in this tag.
 </div>
 </header>
 <main id="content">
-<h1 class="title">The Endless Journey
+<h1 class="title">Deserializing collections with invalid items using Rust and Serde
 <br />
-<span class="subtitle">Published on Apr 04, 2021 by Gahag.</span>
+<span class="subtitle">Published on Jun 06, 2021 by Gahag.</span>
 </h1>
-<p class="verse">
-In the beginning, we were<br />
-In this very place, we met<br />
-For each other, we fell<br />
-In the moonlight, we kissed<br />
-In this very bed, we laid<br />
-Deep inside, we&rsquo;re still the same<br />
-But otherwise, we&rsquo;ve changed<br />
-In the same ways, we walked<br />
-In both our pasts, we stumbled<br />
-In the soil, our faces<br />
-To move on, we stood up<br />
-In the very end, we stand<br />
-There&rsquo;s no going back<br />
-And no way seems forward<br />
+<p>
+Let&rsquo;s say you want to deserialize data in Rust using the following data model:
+</p>
+<div class="org-src-container">
+<pre class="src src-rust">#[derive(Debug, serde::Deserialize)]
+struct Item {
+  name: String,
+  value: f64,
+}
+
+
+#[derive(Debug, serde::Deserialize)]
+struct ApplicationData {
+  items: Vec&lt;Item&gt;,
+}
+</pre>
+</div>
+
+<p>
+But unfortunately, your data looks like this:
+</p>
+<div class="org-src-container">
+<pre class="src src-json">{
+  "items": [
+    {
+      "name": "prop1",
+      "value": 0
+    },
+    {
+      "name": "prop2",
+      "value": "error: missing property"
+    },
+    {
+      "name": "prop3",
+      "value": 3.14
+    },
+    {
+      "name": "prop4",
+      "value": [ 0.1, 0.2, 0.3 ]
+    }
+  ]
+}
+</pre>
+</div>
+
+<p>
+You&rsquo;re only interested in the objects where <code>value</code> is a <code>float</code>, but there are some objects
+where this field has some other type. How can we instrument Rust&rsquo;s amazing Serde to handle
+this? We must use a custom <a href="https://serde.rs/impl-deserialize.html#the-visitor-trait">Visitor</a>!
+</p>
+
+<p>
+The idea is to skip values that do not fit the <code>Item</code> model when deserializing our
+collection. Our visitor must try to deserialize an <code>Item</code>, and if it fails because the
+values is not a valid <code>Item</code>, then ignore such value and move on.
+</p>
+
+<p>
+Note that we must <b>not</b> ignore other kinds of errors, such as when the input data is
+malformed. To do this, we can use an untagged union containing a field of type <code>IgnoredAny</code>,
+which ignores all kinds of values, but stops on parse errors. This way, we can try and
+deserialize an <code>Item</code>, or ignore the value.
+</p>
+
+<p>
+Here is the code:
+</p>
+<div class="org-src-container">
+<pre class="src src-rust">#[derive(Debug)]
+struct Items(Vec&lt;Item&gt;);
+
+impl&lt;'de&gt; serde::Deserialize&lt;'de&gt; for Items {
+  fn deserialize&lt;D&gt;(deserializer: D) -&gt; Result&lt;Self, D::Error&gt;
+  where
+    D: serde::Deserializer&lt;'de&gt;
+  {
+    struct SkipInvalid;
+
+    impl&lt;'de&gt; serde::de::Visitor&lt;'de&gt; for SkipInvalid {
+      type Value = Items;
+
+      fn expecting(&amp;self, formatter: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+	formatter.write_str("heterogeneous items array")
+      }
+
+      fn visit_seq&lt;A&gt;(self, mut seq: A) -&gt; Result&lt;Self::Value, A::Error&gt;
+      where
+	A: serde::de::SeqAccess&lt;'de&gt;,
+      {
+	#[derive(serde::Deserialize)]
+	#[serde(untagged)]
+	enum ItemOrIgnore {
+	  Item(Item),
+	  // Use IgnoredAny to skip any value that is not a valid Item.
+	  Other(serde::de::IgnoredAny),
+	}
+
+	let mut vec = Vec::new();
+
+	while let Some(item) = seq.next_element::&lt;ItemOrIgnore&gt;()? {
+	  if let ItemOrIgnore::Item(value) = item {
+	    vec.push(value);
+	  }
+	}
+
+	Ok(Items(vec))
+      }
+    }
+
+    deserializer.deserialize_seq(SkipInvalid)
+  }
+}
+</pre>
+</div>
+
+
+<p>
+Now, we just need to replace <code>Vec&lt;Item&gt;</code> with <code>Items</code> in <code>ApplicationData</code>, and we&rsquo;re done. Rust
+and Serde are amazing!
 </p>
 </main>
 <footer id="postamble" class="status">
