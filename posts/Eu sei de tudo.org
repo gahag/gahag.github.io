@@ -1,0 +1,26 @@
+#+title: Eu Sei de Tudo
+#+date: <2023-03-20 Mon>
+#+filetags: poetry lyrics
+#+setupfile: ../org-templates/post.org
+
+Eu sei do Carma, sei do bendito fruto \\
+Eu sei quem pula e quem cai pro miolo \\
+Sei da mente, do corpo e do espírito \\
+Sei dos erros, e do desenrolo \\
+
+Sei bem quem mentiu e fingiu se importar \\
+Sei da cicatriz, sei dos tempos sombrios \\
+Sei da neurose, do sangue e suor \\
+Eu sei bem dos calos e dos calafrios \\
+
+Sei do controle dos descontrolados \\
+Eu sei quem morde e eu sei quem ladra \\
+Eu sei dos mantras e dos desencontros \\
+Eu sei dos anjos, e sei dos demônios \\
+
+Sei dos códigos e estatísticas, sei dos números e das linguísticas \\
+Sei quanto adoeço, o quanto eu curo \\
+Eu sei do passado, eu sei do presente \\
+O que eu não sei, vou saber no futuro \\
+
+@@html:<small><small>@@Adaptado de [[https://www.youtube.com/watch?v=hYVNHo6ANZw][Sant - O que Eu Não Sei]]@@html:</small></small>@@
