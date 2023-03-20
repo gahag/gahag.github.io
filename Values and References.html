@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- Jun 07, 2021 -->
+<!-- Mar 20, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Values and References</title>
@@ -17,50 +17,26 @@
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -93,9 +69,9 @@ most commonly adopted. Therefore, the insights provided here should apply to mos
 programming languages.
 </p>
 
-<section id="outline-container-orgf86df95" class="outline-2">
-<h2 id="orgf86df95">Definitions</h2>
-<div class="outline-text-2" id="text-orgf86df95">
+<section id="outline-container-org8384bfb" class="outline-2">
+<h2 id="org8384bfb">Definitions</h2>
+<div class="outline-text-2" id="text-org8384bfb">
 <p>
 The common definitions of values and references can be confusing. I&rsquo;ll adopt an
 unconventional definition, which I believe will help to prevent such confusion.
@@ -166,9 +142,9 @@ In this example, the reference points to the object in memory address 16.
 </p>
 </div>
 </section>
-<section id="outline-container-org8a015ae" class="outline-2">
-<h2 id="org8a015ae">Variables</h2>
-<div class="outline-text-2" id="text-org8a015ae">
+<section id="outline-container-org74b934c" class="outline-2">
+<h2 id="org74b934c">Variables</h2>
+<div class="outline-text-2" id="text-org74b934c">
 <p>
 Variables are aliases for memory regions. Therefore, variables are aliases for values,
 because memory is data. A variable aliases the <b>same</b> memory region during it&rsquo;s entire
@@ -178,9 +154,9 @@ in the following section.
 </p>
 </div>
 </section>
-<section id="outline-container-orgca229ad" class="outline-2">
-<h2 id="orgca229ad">Memory</h2>
-<div class="outline-text-2" id="text-orgca229ad">
+<section id="outline-container-org1d4bd86" class="outline-2">
+<h2 id="org1d4bd86">Memory</h2>
+<div class="outline-text-2" id="text-org1d4bd86">
 <p>
 The memory layout for most computer programs is divided into two disjoint macro regions:
 the Heap and the Stack. These are not to be confused with the generic data structures of
@@ -332,9 +308,9 @@ programmer to provide a custom copy algorithm.
 </p>
 </div>
 </section>
-<section id="outline-container-orgf49e72f" class="outline-2">
-<h2 id="orgf49e72f">Parameters</h2>
-<div class="outline-text-2" id="text-orgf49e72f">
+<section id="outline-container-org020fa08" class="outline-2">
+<h2 id="org020fa08">Parameters</h2>
+<div class="outline-text-2" id="text-org020fa08">
 <p>
 Often, confusion arises when function parameters come into play. Parameters are a
 special type of local variable, and therefore are placed in the Stack. When one passes
@@ -366,17 +342,17 @@ is usually equivalent to the following:
 </div>
 </div>
 </section>
-<section id="outline-container-org5ca4c37" class="outline-2">
-<h2 id="org5ca4c37">Examples</h2>
-<div class="outline-text-2" id="text-org5ca4c37">
+<section id="outline-container-orgb841b2a" class="outline-2">
+<h2 id="orgb841b2a">Examples</h2>
+<div class="outline-text-2" id="text-orgb841b2a">
 <p>
 Let&rsquo;s see some examples that explore these concepts. Try to guess what will happen in
 each example. Hover the cursor over the boxes to see the resulting output.
 </p>
 </div>
-<div id="outline-container-org75e06e4" class="outline-3">
-<h3 id="org75e06e4">Python</h3>
-<div class="outline-text-3" id="text-org75e06e4">
+<div id="outline-container-orgc46f3b8" class="outline-3">
+<h3 id="orgc46f3b8">Python</h3>
+<div class="outline-text-3" id="text-orgc46f3b8">
 <p>
 Remember, in Python <b>all variables are references</b> to Heap-allocated objects. Are the
 following lists being copied on assignment, or is it just the variables (which are
@@ -395,7 +371,7 @@ list2.append(4)
 <span class="org-keyword">print</span>(<span class="org-string">'list2:'</span>, list2)
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="org2d913ae">
 <pre class="example">
 list1: [1, 2]
 list2: [3, 4]
@@ -422,7 +398,7 @@ immutable in Python.
 <span class="org-keyword">print</span>(<span class="org-string">'var2:'</span>, var2)
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="orgfd05a21">
 <pre class="example">
 var1: 1
 var2: 2
@@ -450,7 +426,7 @@ var.append(5)
 <span class="org-keyword">print</span>(<span class="org-string">'var:'</span>, var)
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="org0d79379">
 <pre class="example">
 my_dict[key]: [1, 2, 3, 4, 5]
 var: [1, 2, 3, 4, 5]
@@ -486,7 +462,7 @@ other_counter.increment()
 <span class="org-keyword">print</span>(<span class="org-string">'counter: '</span>, counter.value())
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="org99dcc50">
 <pre class="example">
 counter:  3
 </pre>
@@ -514,7 +490,7 @@ mutate(my_list)
 <span class="org-keyword">print</span>(<span class="org-string">'my_list: '</span>, my_list)
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="org32f6828">
 <pre class="example">
 my_list:  [1, 2, 5]
 </pre>
@@ -528,9 +504,9 @@ observable, because <code>arg</code> and <code>my_list</code> refer to the same 
 </div>
 </div>
 </div>
-<div id="outline-container-orgb5d3a02" class="outline-3">
-<h3 id="orgb5d3a02">C++</h3>
-<div class="outline-text-3" id="text-orgb5d3a02">
+<div id="outline-container-org468e1d6" class="outline-3">
+<h3 id="org468e1d6">C++</h3>
+<div class="outline-text-3" id="text-org468e1d6">
 <p>
 C++ is a language that allows the programmer to decide whether to place values in the
 Stack or in the Heap. As C++ can get quite complicated, we&rsquo;ll only see some basic
@@ -544,7 +520,7 @@ are allocated in the Stack unless stated otherwise, classes like <code>std::vect
 The examples will make use of the following includes and helper function:
 </p>
 <div class="org-src-container">
-<pre class="src src-C++" id="org752fd4c"><span class="org-preprocessor">#include</span> <span class="org-string">&lt;iostream&gt;</span>
+<pre class="src src-C++" id="org371f78c"><span class="org-preprocessor">#include</span> <span class="org-string">&lt;iostream&gt;</span>
 <span class="org-preprocessor">#include</span> <span class="org-string">&lt;vector&gt;</span>
 
 
@@ -583,7 +559,7 @@ What do you think will be the output of the following example?
 }
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="org6bc8398">
 <pre class="example">
 vec1: 1 2 42
 vec2: 1 2 3
@@ -627,7 +603,7 @@ operation can be expensive.
 }
 </pre>
 </div>
-<div class="spoiler">
+<div class="spoiler" id="orgf737282">
 <pre class="example">
 vec: 1 2 3 42
 </pre>
@@ -643,9 +619,9 @@ mutated.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd4b0b37" class="outline-3">
-<h3 id="orgd4b0b37">Conclusion</h3>
-<div class="outline-text-3" id="text-orgd4b0b37">
+<div id="outline-container-org9dafca4" class="outline-3">
+<h3 id="org9dafca4">Conclusion</h3>
+<div class="outline-text-3" id="text-org9dafca4">
 <p>
 I hope such insights and examples were good to prevent confusion regarding values and
 references. Please let me know of any doubts or suggestions :)
@@ -658,7 +634,7 @@ references. Please let me know of any doubts or suggestions :)
 <div class='footer'>
   Copyright © 2021 <a href='mailto:gabriel.s.b@live.com'>Gabriel Bastos</a>.<br>
   Template by <a href='https://gitlab.com/psachin/psachin.gitlab.io/'>Sachin Patil</a> <br>
-  Last updated on Jun 07, 2021. Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="https://orgmode.org">Org</a> mode 9.3).
+  Last updated on Mar 20, 2023. Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="https://orgmode.org">Org</a> mode 9.4.4).
 </div>
 </footer>
 </body>
